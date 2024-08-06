@@ -165,10 +165,16 @@ export declare const app: {
         { results: Array<{ _id: string; _score: number }> },
         any
       >;
+      insert: FunctionReference<
+        "action",
+        "internal",
+        { filterField: string; textField: string },
+        any
+      >;
       insertRow: FunctionReference<
         "mutation",
         "internal",
-        { cuisine: string; description: string; embedding: Array<number> },
+        { embedding: Array<number>; filterField: string; textField: string },
         any
       >;
       list: FunctionReference<"query", "internal", any, any>;

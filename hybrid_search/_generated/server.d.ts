@@ -149,7 +149,10 @@ export type DatabaseReader = GenericDatabaseReader<DataModel>;
 export type DatabaseWriter = GenericDatabaseWriter<DataModel>;
 
 export declare const component: {};
-type ComponentArgs = {};
+type ComponentArgs = {
+  openAiKey: string;
+  vectorSearchRatio: number;
+};
 export declare const componentArg: <Name extends keyof ComponentArgs>(
   ctx: GenericCtx,
   name: Name,

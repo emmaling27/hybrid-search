@@ -1,8 +1,18 @@
-import { action, internalQuery, mutation, query } from "./_generated/server";
+import {
+  action,
+  // functions,
+  component,
+  componentArg,
+  internalQuery,
+  mutation,
+  query,
+} from "./_generated/server";
+import { functions } from "./_generated/api";
 import { v } from "convex/values";
+import { EXAMPLE_DATA, CUISINES } from "../constants";
 
-export async function embed(text: string): Promise<number[]> {
-  const key = process.env.OPENAI_KEY;
+export async function embed(ctx: any, text: string): Promise<number[]> {
+  const key = componentArg(ctx, "openAiKey");
   if (!key) {
     throw new Error("OPENAI_KEY environment variable not set!");
   }
@@ -30,7 +40,7 @@ export const fetchResults = query({
     results: v.array(v.object({ _id: v.id("table"), _score: v.float64() })),
   },
   handler: async (ctx, args) => {
-    const out: SearchResult[] = [];
+    const out: HybridSearchResult[] = [];
     for (const result of args.results) {
       const doc = await ctx.db.get(result._id);
       if (!doc) {
@@ -47,7 +57,7 @@ export const fetchResults = query({
   },
 });
 
-export type SearchResult = {
+export type HybridSearchResult = {
   _id: string;
   textField: string;
   filterField: string;
@@ -57,7 +67,7 @@ export type SearchResult = {
 export const vectorSearch = action({
   args: { query: v.string(), filterField: v.optional(v.array(v.string())) },
   handler: async (ctx, args) => {
-    const embedding = await embed(args.query);
+    const embedding = await embed(ctx, args.query);
     let results;
     const filterField = args.filterField;
     if (filterField !== undefined) {
@@ -73,9 +83,12 @@ export const vectorSearch = action({
         limit: 16,
       });
     }
-    const rows: SearchResult[] = await ctx.runQuery(fetchResults, {
-      results,
-    });
+    const rows: HybridSearchResult[] = await ctx.runQuery(
+      functions.vector_search.fetchResults,
+      {
+        results,
+      }
+    );
     return rows;
   },
 });
@@ -84,10 +97,10 @@ export const populate = action({
   args: {},
   handler: async (ctx) => {
     for (const doc of EXAMPLE_DATA) {
-      const embedding = await embed(doc.description);
-      await ctx.runMutation(insertRow, {
-        cuisine: doc.cuisine,
-        description: doc.description,
+      const embedding = await embed(ctx, doc.description);
+      await ctx.runMutation(functions.vector_search.insertRow, {
+        filterField: doc.cuisine,
+        textField: doc.description,
         embedding,
       });
     }
@@ -96,21 +109,38 @@ export const populate = action({
 
 export const insertRow = mutation({
   args: {
-    description: v.string(),
-    cuisine: v.string(),
+    textField: v.string(),
+    filterField: v.string(),
     embedding: v.array(v.float64()),
   },
   handler: async (ctx, args) => {
-    if (!Object.prototype.hasOwnProperty.call(CUISINES, args.cuisine)) {
-      throw new Error(`Invalid cuisine: ${args.cuisine}`);
+    if (!Object.prototype.hasOwnProperty.call(CUISINES, args.filterField)) {
+      throw new Error(`Invalid cuisine: ${args.filterField}`);
     }
-    await ctx.db.insert("foods", args);
+    await ctx.db.insert("table", args);
   },
 });
 
 export const list = query(async (ctx) => {
-  const docs = await ctx.db.query("foods").order("desc").take(10);
+  const docs = await ctx.db.query("table").order("desc").take(10);
   return docs.map((doc) => {
-    return { _id: doc._id, description: doc.description, cuisine: doc.cuisine };
+    return {
+      _id: doc._id,
+      description: doc.textField,
+      cuisine: doc.filterField,
+    };
   });
+});
+
+export const insert = action({
+  args: { filterField: v.string(), textField: v.string() },
+  handler: async (ctx, { textField, filterField }) => {
+    const embedding = await embed(ctx, textField);
+    const doc = {
+      filterField: filterField,
+      textField: textField,
+      embedding,
+    };
+    await ctx.runMutation(functions.vector_search.insertRow, doc);
+  },
 });

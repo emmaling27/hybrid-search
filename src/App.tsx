@@ -9,6 +9,7 @@ function Insert() {
   const [cuisine, setCuisine] = useState("american");
   const [insertInProgress, setInsertInProgress] = useState(false);
   const insert = useAction(api.vectorDemo.insert);
+  // const insert = useAction(api.s)
 
   async function handleInsert(event: FormEvent) {
     event.preventDefault();
@@ -68,6 +69,7 @@ function Search() {
     cuisine:
       submittedSearchFilter.length !== 0 ? submittedSearchFilter[0] : undefined,
   });
+  // const hybridSearch
 
   const handleSearch = async (event: FormEvent) => {
     event.preventDefault();
@@ -129,6 +131,19 @@ function Search() {
         </div>
         <div className="column">
           <h3>Full Text Search Results</h3>
+          {fullTextSearch !== undefined && (
+            <ul>
+              {fullTextSearch.map((result) => (
+                <li key={result._id}>
+                  <span>{(CUISINES as any)[result.cuisine]}</span>
+                  <span>{result.description}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="column">
+          <h3>Hybrid Search Results</h3>
           {fullTextSearch !== undefined && (
             <ul>
               {fullTextSearch.map((result) => (
