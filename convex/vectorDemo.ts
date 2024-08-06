@@ -6,7 +6,7 @@ import {
   internalQuery,
 } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { CUISINES, EXAMPLE_DATA } from "./constants";
+import { CUISINES, EXAMPLE_DATA } from "../constants";
 
 export type SearchResult = {
   _id: string;

@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import { useAction, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { SearchResult } from "../convex/vectorDemo";
-import { CUISINES } from "../convex/constants";
+import { CUISINES } from "../constants";
 
 function Insert() {
   const [description, setDescription] = useState("");
@@ -55,7 +55,7 @@ function Search() {
   const [submittedSearchText, setSubmittedSearchText] = useState("");
   const [searchFilter, setSearchFilter] = useState<string[]>([]);
   const [submittedSearchFilter, setSubmittedSearchFilter] = useState<string[]>(
-    [],
+    []
   );
   const [searchResults, setSearchResults] = useState<
     SearchResult[] | undefined

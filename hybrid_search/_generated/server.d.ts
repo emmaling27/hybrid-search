@@ -148,37 +148,9 @@ export type DatabaseReader = GenericDatabaseReader<DataModel>;
  */
 export type DatabaseWriter = GenericDatabaseWriter<DataModel>;
 
-export declare const app: {
-  hybrid_search: {
-    text_search: {
-      fullTextSearch: FunctionReference<
-        "query",
-        "internal",
-        { filterField?: string; query: string },
-        any
-      >;
-    };
-    vector_search: {
-      fetchResults: FunctionReference<
-        "query",
-        "internal",
-        { results: Array<{ _id: string; _score: number }> },
-        any
-      >;
-      insertRow: FunctionReference<
-        "mutation",
-        "internal",
-        { cuisine: string; description: string; embedding: Array<number> },
-        any
-      >;
-      list: FunctionReference<"query", "internal", any, any>;
-      populate: FunctionReference<"action", "internal", {}, any>;
-      vectorSearch: FunctionReference<
-        "action",
-        "internal",
-        { filterField?: Array<string>; query: string },
-        any
-      >;
-    };
-  };
-};
+export declare const component: {};
+type ComponentArgs = {};
+export declare const componentArg: <Name extends keyof ComponentArgs>(
+  ctx: GenericCtx,
+  name: Name,
+) => ComponentArgs[Name];

@@ -1,0 +1,28 @@
+{
+  "files": {
+    "npm-packages/private-demos/vector-search/.env": "25dd0dfc61db4cda6fb8af8fc7bb6db4ae82e8a2",
+    "npm-packages/private-demos/vector-search/.gitignore": "bbb72aeb45c06023f33815785603759a652297e0",
+    "npm-packages/private-demos/vector-search/README.md": "851927b052ccf7c543dcb4dc9b1a0bea9063275e",
+    "npm-packages/private-demos/vector-search/convex/README.md": "e1d9876f8008f6827ef54f2986b3a12d388c6d6f",
+    "npm-packages/private-demos/vector-search/convex/_generated/api.d.ts": "014f8ded2e88bf0ebf5c2034298888e947447e30",
+    "npm-packages/private-demos/vector-search/convex/_generated/api.js": "e9319bc976092335c655258e215b0375be1c4d88",
+    "npm-packages/private-demos/vector-search/convex/_generated/dataModel.d.ts": "30fc9ac223a82ce8487db97861aed452d0fbd97e",
+    "npm-packages/private-demos/vector-search/convex/_generated/server.d.ts": "57fd064cff534cbe9fe1595456bcfb7401454873",
+    "npm-packages/private-demos/vector-search/convex/_generated/server.js": "12ed719a69eb6a3ec22a9143ccbb1c38a4ff8200",
+    "npm-packages/private-demos/vector-search/convex/constants.ts": "6b1a8c7c4d9ba3d50009dfd5788eef3dc07cf64f",
+    "npm-packages/private-demos/vector-search/convex/schema.ts": "d942110746aae0ae15978b580a3c1bb6109ddca6",
+    "npm-packages/private-demos/vector-search/convex/search.ts": "f05d8087090e8ab8cea8f8c109da8bc366a2276a",
+    "npm-packages/private-demos/vector-search/convex/tsconfig.json": "d067e206f37317e2d7f05df4643cb544d42c107b",
+    "npm-packages/private-demos/vector-search/convex/vectorDemo.ts": "34bcc899ebf334f487184a6fbeab150302a4628a",
+    "npm-packages/private-demos/vector-search/index.html": "427b5a021eba69236edb223c469ee40439679c4c",
+    "npm-packages/private-demos/vector-search/package.json": "b8ad384e746aecfd9e8c1d5d94354187d553d563",
+    "npm-packages/private-demos/vector-search/src/App.tsx": "a9fc8eddce9a1936751780cf9694ef62cb0d348e",
+    "npm-packages/private-demos/vector-search/src/index.css": "a7139bb21cbee08c92287da15d7f46bf9740fce5",
+    "npm-packages/private-demos/vector-search/src/main.tsx": "433053e4d58cfc47cc8cd6ec14b0964cf3d002d9",
+    "npm-packages/private-demos/vector-search/src/vite-env.d.ts": "11f02fe2a0061d6e6e1f271b21da95423b448b32",
+    "npm-packages/private-demos/vector-search/tsconfig.json": "f7cc85e8283dc7f3779a43fcd00aad736a861fb4",
+    "npm-packages/private-demos/vector-search/vite.config.ts": "9cc50ead1c0a0d79eecdd9958920e4d0a0fbfac8",
+    "npm-packages/private-demos/vector-search/.rush/temp/shrinkwrap-deps.json": "4e8c07d26fb5222a2cfdfc97dee9262ed24eab45"
+  },
+  "arguments": "vite build "
+}

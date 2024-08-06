@@ -1,0 +1,116 @@
+import { action, internalQuery, mutation, query } from "./_generated/server";
+import { v } from "convex/values";
+
+export async function embed(text: string): Promise<number[]> {
+  const key = process.env.OPENAI_KEY;
+  if (!key) {
+    throw new Error("OPENAI_KEY environment variable not set!");
+  }
+  const req = { input: text, model: "text-embedding-ada-002" };
+  const resp = await fetch("https://api.openai.com/v1/embeddings", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${key}`,
+    },
+    body: JSON.stringify(req),
+  });
+  if (!resp.ok) {
+    const msg = await resp.text();
+    throw new Error(`OpenAI API error: ${msg}`);
+  }
+  const json = await resp.json();
+  const vector = json["data"][0]["embedding"];
+  console.log(`Computed embedding of "${text}": ${vector.length} dimensions`);
+  return vector;
+}
+
+export const fetchResults = query({
+  args: {
+    results: v.array(v.object({ _id: v.id("table"), _score: v.float64() })),
+  },
+  handler: async (ctx, args) => {
+    const out: SearchResult[] = [];
+    for (const result of args.results) {
+      const doc = await ctx.db.get(result._id);
+      if (!doc) {
+        continue;
+      }
+      out.push({
+        _id: doc._id,
+        textField: doc.textField,
+        filterField: doc.filterField,
+        _score: result._score,
+      });
+    }
+    return out;
+  },
+});
+
+export type SearchResult = {
+  _id: string;
+  textField: string;
+  filterField: string;
+  _score: number;
+};
+
+export const vectorSearch = action({
+  args: { query: v.string(), filterField: v.optional(v.array(v.string())) },
+  handler: async (ctx, args) => {
+    const embedding = await embed(args.query);
+    let results;
+    const filterField = args.filterField;
+    if (filterField !== undefined) {
+      results = await ctx.vectorSearch("table", "vector_search", {
+        vector: embedding,
+        limit: 16,
+        filter: (q) =>
+          q.or(...filterField.map((cuisine) => q.eq("filterField", cuisine))),
+      });
+    } else {
+      results = await ctx.vectorSearch("table", "vector_search", {
+        vector: embedding,
+        limit: 16,
+      });
+    }
+    const rows: SearchResult[] = await ctx.runQuery(fetchResults, {
+      results,
+    });
+    return rows;
+  },
+});
+
+export const populate = action({
+  args: {},
+  handler: async (ctx) => {
+    for (const doc of EXAMPLE_DATA) {
+      const embedding = await embed(doc.description);
+      await ctx.runMutation(insertRow, {
+        cuisine: doc.cuisine,
+        description: doc.description,
+        embedding,
+      });
+    }
+  },
+});
+
+export const insertRow = mutation({
+  args: {
+    description: v.string(),
+    cuisine: v.string(),
+    embedding: v.array(v.float64()),
+  },
+  handler: async (ctx, args) => {
+    if (!Object.prototype.hasOwnProperty.call(CUISINES, args.cuisine)) {
+      throw new Error(`Invalid cuisine: ${args.cuisine}`);
+    }
+    await ctx.db.insert("foods", args);
+  },
+});
+
+export const list = query(async (ctx) => {
+  const docs = await ctx.db.query("foods").order("desc").take(10);
+  return docs.map((doc) => {
+    return { _id: doc._id, description: doc.description, cuisine: doc.cuisine };
+  });
+});
