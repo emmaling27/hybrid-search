@@ -9,9 +9,7 @@
  * @module
  */
 
-import type * as old_vector from "../old_vector.js";
-import type * as search from "../search.js";
-import type * as vectorDemo from "../vectorDemo.js";
+import type * as index from "../index.js";
 
 import type {
   ApiFromModules,
@@ -27,9 +25,7 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  old_vector: typeof old_vector;
-  search: typeof search;
-  vectorDemo: typeof vectorDemo;
+  index: typeof index;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
