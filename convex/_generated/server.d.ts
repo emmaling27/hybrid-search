@@ -154,7 +154,7 @@ export declare const app: {
       hybridSearch: FunctionReference<
         "action",
         "internal",
-        { filterField?: string; query: string },
+        { filterField?: string; query: string; semanticRatio?: number },
         any
       >;
     };

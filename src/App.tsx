@@ -65,6 +65,7 @@ function Search() {
   >();
   const [searchInProgress, setSearchInProgress] = useState(false);
   const [hybridSearchInProgress, setHybridSearchInProgress] = useState(false);
+  const [semanticRatio, setSemanticRatio] = useState(0.5);
 
   const vectorSearch = useAction(api.index.vectorSearch);
   const fullTextSearch = useQuery(api.index.fullTextSearch, {
@@ -101,6 +102,7 @@ function Search() {
       setHybridSearchResults(hybridResults);
     } finally {
       setSearchInProgress(false);
+      setHybridSearchInProgress(false);
     }
   };
   return (
@@ -125,6 +127,15 @@ function Search() {
             </option>
           ))}
         </select>
+        <input
+          value={semanticRatio}
+          type="number"
+          min="0"
+          max="1"
+          step=".1"
+          onChange={(e) => setSemanticRatio(parseFloat(e.target.value))}
+          placeholder="Semantic ratio"
+        />
         <input type="submit" value="Search" disabled={searchInProgress} />
       </form>
       <div className="row">
@@ -136,7 +147,7 @@ function Search() {
                 <li key={result._id}>
                   <span>{(CUISINES as any)[result.cuisine]}</span>
                   <span>{result.description}</span>
-                  <span>{result._score.toFixed(4)}</span>
+                  <span>{result._score?.toFixed(4)}</span>
                 </li>
               ))}
             </ul>
@@ -163,7 +174,7 @@ function Search() {
                 <li key={result._id}>
                   <span>{(CUISINES as any)[result.cuisine]}</span>
                   <span>{result.description}</span>
-                  <span>{result._score.toFixed(4)}</span>
+                  <span>{result._score?.toFixed(4)}</span>
                 </li>
               ))}
             </ul>

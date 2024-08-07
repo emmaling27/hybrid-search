@@ -76,11 +76,16 @@ export const vectorSearch = action({
 });
 
 export const hybridSearch = action({
-  args: { query: v.string(), cuisine: v.optional(v.string()) },
-  handler: async (ctx, { query, cuisine }) => {
+  args: {
+    query: v.string(),
+    cuisine: v.optional(v.string()),
+    semanticRatio: v.optional(v.float64()),
+  },
+  handler: async (ctx, { query, cuisine, semanticRatio }) => {
     let results = await ctx.runAction(app.hybrid_search.hybrid.hybridSearch, {
       query,
       filterField: cuisine,
+      semanticRatio,
     });
     return results.map((result: HybridSearchResult) => {
       return {
