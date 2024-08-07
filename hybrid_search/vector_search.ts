@@ -1,6 +1,5 @@
 import {
   action,
-  // functions,
   component,
   componentArg,
   internalQuery,
@@ -61,33 +60,38 @@ export type HybridSearchResult = {
   _id: string;
   textField: string;
   filterField: string;
-  _score: number;
+  _score?: number;
 };
 
 export const vectorSearch = action({
-  args: { query: v.string(), filterField: v.optional(v.array(v.string())) },
-  handler: async (ctx, args) => {
-    const embedding = await embed(ctx, args.query);
+  args: {
+    query: v.string(),
+    filterField: v.optional(v.array(v.string())),
+    limit: v.optional(v.float64()),
+  },
+  handler: async (ctx, { query, filterField, limit }) => {
+    let maxResults = limit ?? componentArg(ctx, "maxResults");
+    maxResults = Math.round(maxResults);
+    const embedding = await embed(ctx, query);
     let results;
-    const filterField = args.filterField;
     if (filterField !== undefined) {
       results = await ctx.vectorSearch("table", "vector_search", {
         vector: embedding,
-        limit: 16,
+        limit: maxResults,
         filter: (q) =>
           q.or(...filterField.map((cuisine) => q.eq("filterField", cuisine))),
       });
     } else {
       results = await ctx.vectorSearch("table", "vector_search", {
         vector: embedding,
-        limit: 16,
+        limit: maxResults,
       });
     }
     const rows: HybridSearchResult[] = await ctx.runQuery(
       functions.vector_search.fetchResults,
       {
         results,
-      }
+      },
     );
     return rows;
   },

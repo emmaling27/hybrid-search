@@ -1,5 +1,5 @@
 {
-  "name": "private-vector-search",
+  "name": "hybrid-search-component",
   "version": "0.0.0",
   "scripts": {
     "dev": "npm-run-all --parallel dev:backend dev:frontend",
@@ -9,7 +9,7 @@
     "predev": "convex dev --until-success"
   },
   "dependencies": {
-    "convex": "^1.13.3-alpha.0",
+    "convex": "workspace:*",
     "prettier": "3.2.5",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"

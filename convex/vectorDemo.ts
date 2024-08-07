@@ -1,13 +1,5 @@
 import { v } from "convex/values";
-import {
-  query,
-  action,
-  internalMutation,
-  internalQuery,
-  app,
-} from "./_generated/server";
-import { internal } from "./_generated/api";
-import { CUISINES, EXAMPLE_DATA } from "../constants";
+import { query, action, app } from "./_generated/server";
 import { HybridSearchResult } from "../hybrid_search/vector_search";
 
 export type SearchResult = {
@@ -49,7 +41,7 @@ export const fullTextSearch = query({
       {
         query: args.query,
         filterField: args.cuisine,
-      }
+      },
     );
     return results.map((result: HybridSearchResult) => {
       return {

@@ -56,12 +56,16 @@ function Search() {
   const [submittedSearchText, setSubmittedSearchText] = useState("");
   const [searchFilter, setSearchFilter] = useState<string[]>([]);
   const [submittedSearchFilter, setSubmittedSearchFilter] = useState<string[]>(
-    []
+    [],
   );
   const [searchResults, setSearchResults] = useState<
     SearchResult[] | undefined
   >();
+  const [hybridSearchResults, setHybridSearchResults] = useState<
+    SearchResult[] | undefined
+  >();
   const [searchInProgress, setSearchInProgress] = useState(false);
+  const [hybridSearchInProgress, setHybridSearchInProgress] = useState(false);
 
   const vectorSearch = useAction(api.search.vectorSearch);
   const fullTextSearch = useQuery(api.vectorDemo.fullTextSearch, {
@@ -69,7 +73,7 @@ function Search() {
     cuisine:
       submittedSearchFilter.length !== 0 ? submittedSearchFilter[0] : undefined,
   });
-  // const hybridSearch
+  const hybridSearch = useAction(api.search.hybridSearch);
 
   const handleSearch = async (event: FormEvent) => {
     event.preventDefault();
@@ -80,12 +84,22 @@ function Search() {
       return;
     }
     setSearchInProgress(true);
+    setHybridSearchInProgress(true);
     try {
-      const results = await vectorSearch({
+      const vectorQuery = vectorSearch({
         query: searchText,
         cuisines: searchFilter.length > 0 ? searchFilter : undefined,
       });
-      setSearchResults(results);
+      const hybridQuery = hybridSearch({
+        query: searchText,
+        cuisine: searchFilter.length > 0 ? searchFilter[0] : undefined, // TODO error if there is more than one filter
+      });
+      const [vectorResults, hybridResults] = await Promise.all([
+        vectorQuery,
+        hybridQuery,
+      ]);
+      setSearchResults(vectorResults);
+      setHybridSearchResults(hybridResults);
     } finally {
       setSearchInProgress(false);
     }
@@ -144,12 +158,13 @@ function Search() {
         </div>
         <div className="column">
           <h3>Hybrid Search Results</h3>
-          {fullTextSearch !== undefined && (
+          {hybridSearchResults !== undefined && (
             <ul>
-              {fullTextSearch.map((result) => (
+              {hybridSearchResults.map((result) => (
                 <li key={result._id}>
                   <span>{(CUISINES as any)[result.cuisine]}</span>
                   <span>{result.description}</span>
+                  <span>{result._score.toFixed(4)}</span>
                 </li>
               ))}
             </ul>
