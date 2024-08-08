@@ -1,7 +1,13 @@
 import { v } from "convex/values";
 import { action, componentArg } from "./_generated/server";
 import { functions } from "./_generated/api";
-import { HybridSearchResult } from "./vector_search";
+
+type SearchResult = {
+  _id: string;
+  textField: string;
+  filterField: string;
+  _score: number;
+};
 
 export const hybridSearch = action({
   args: {
@@ -27,34 +33,39 @@ export const hybridSearch = action({
       vectorSearch,
       textSearch,
     ]);
-    let results = new Map<HybridSearchResult, number>();
+    let results = new Map<string, SearchResult>();
     for (let result of vectorResults) {
-      result = {
+      const searchResult = {
         _id: result._id,
         textField: result.textField,
         filterField: result.filterField,
+        _score: result._score ?? 1,
       };
-      results.set(result, 1);
+      results.set(result._id, searchResult);
     }
     for (let result of textResults) {
-      let searchResult = {
-        _id: result._id,
-        textField: result.textField,
-        filterField: result.filterField,
-      };
-      if (results.get(searchResult)) {
-        results.set(result, 2);
+      let searchResult;
+      if (results.get(result._id)) {
+        searchResult = {
+          _id: result._id,
+          textField: result.textField,
+          filterField: result.filterField,
+          _score: 2,
+        };
       } else {
-        results.set(result, 1);
+        searchResult = {
+          _id: result._id,
+          textField: result.textField,
+          filterField: result.filterField,
+          _score: 1,
+        };
       }
+      results.set(result._id, searchResult);
     }
     console.log(results);
-    // make an array of the results sorted by the rank (the value in the map)
     let sortedResults = new Map(
-      [...results.entries()].sort((a, b) => b[1] - a[1]),
+      [...results.entries()].sort((a, b) => b[1]._score - a[1]._score)
     );
-    const finalResults2 = [...sortedResults.keys()];
-
-    return finalResults2;
+    return [...sortedResults.values()];
   },
 });
