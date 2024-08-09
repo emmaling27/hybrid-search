@@ -8,6 +8,23 @@ export const CUISINES = {
   french: "🇫🇷",
 };
 
+export const GENRES = {
+  drama: "🎭",
+  crime: "🔫",
+  action: "🦸",
+  adventure: "🌋",
+  comedy: "🤣",
+  mystery: "🕵️",
+  horror: "👻",
+  documentary: "🎥",
+  western: "🤠",
+  "science fiction": "👽",
+  music: "🎵",
+  thriller: "🔪",
+  romance: "💕",
+  fantasy: "🧙",
+};
+
 export const EXAMPLE_DATA = [
   {
     description:

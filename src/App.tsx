@@ -2,7 +2,7 @@ import { FormEvent, useState } from "react";
 import { useAction, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { HybridSearchResult } from "../hybrid_search/vector_search";
-import { CUISINES } from "../constants";
+import { CUISINES, GENRES } from "../constants";
 
 function Insert() {
   const [description, setDescription] = useState("");
@@ -50,7 +50,7 @@ function presentCuisine(name: string, emoji: string) {
   return `${emoji} ${name[0].toUpperCase()}${name.slice(1)}`;
 }
 
-function Search({ searchApi }) {
+function Search({ searchApi, filterVariants }) {
   const [searchText, setSearchText] = useState("");
   const [submittedSearchText, setSubmittedSearchText] = useState("");
   const [searchFilter, setSearchFilter] = useState<string[]>([]);
@@ -120,7 +120,7 @@ function Search({ searchApi }) {
             setSearchFilter([...e.target.selectedOptions].map((o) => o.value))
           }
         >
-          {Object.entries(CUISINES).map(([c, e]) => (
+          {Object.entries(filterVariants).map(([c, e]) => (
             <option key={c} value={c}>
               {presentCuisine(c, e)}
             </option>
@@ -144,7 +144,9 @@ function Search({ searchApi }) {
             <ul>
               {searchResults.map((result) => (
                 <li key={result._id}>
-                  <span>{(CUISINES as any)[result.filterField]}</span>
+                  <span>
+                    {(filterVariants as any)[result.filterField.toLowerCase()]}
+                  </span>
                   <span>{result.textField}</span>
                   <span>{result._score?.toFixed(4)}</span>
                 </li>
@@ -158,7 +160,9 @@ function Search({ searchApi }) {
             <ul>
               {fullTextSearch.map((result) => (
                 <li key={result._id}>
-                  <span>{(CUISINES as any)[result.filterField]}</span>
+                  <span>
+                    {(filterVariants as any)[result.filterField.toLowerCase()]}
+                  </span>
                   <span>{result.textField}</span>
                 </li>
               ))}
@@ -171,7 +175,9 @@ function Search({ searchApi }) {
             <ul>
               {hybridSearchResults.map((result) => (
                 <li key={result._id}>
-                  <span>{(CUISINES as any)[result.filterField]}</span>
+                  <span>
+                    {(filterVariants as any)[result.filterField.toLowerCase()]}
+                  </span>
                   <span>{result.textField}</span>
                   <span>{result._score?.toFixed(4)}</span>
                 </li>
@@ -222,8 +228,8 @@ export default function App() {
         </ul>
       )}
       <Insert />
-      <Search searchApi={api.foods} />
-      <Search searchApi={api.movies} />
+      <Search searchApi={api.foods} filterVariants={CUISINES} />
+      <Search searchApi={api.movies} filterVariants={GENRES} />
     </main>
   );
 }
