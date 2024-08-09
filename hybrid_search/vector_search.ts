@@ -91,7 +91,7 @@ export const vectorSearch = action({
       functions.vector_search.fetchResults,
       {
         results,
-      },
+      }
     );
     return rows;
   },
@@ -111,16 +111,40 @@ export const populate = action({
   },
 });
 
+export const populateFrom = action({
+  args: {
+    data: v.array(
+      v.object({
+        textField: v.string(),
+        filterField: v.string(),
+        parentId: v.optional(v.string()),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    for (const doc of args.data) {
+      const embedding = await embed(ctx, doc.textField);
+      await ctx.runMutation(functions.vector_search.insertRow, {
+        filterField: doc.filterField,
+        textField: doc.textField,
+        embedding,
+        parentId: doc.parentId,
+      });
+    }
+  },
+});
+
 export const insertRow = mutation({
   args: {
     textField: v.string(),
     filterField: v.string(),
     embedding: v.array(v.float64()),
+    parentId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    if (!Object.prototype.hasOwnProperty.call(CUISINES, args.filterField)) {
-      throw new Error(`Invalid cuisine: ${args.filterField}`);
-    }
+    // if (!Object.prototype.hasOwnProperty.call(CUISINES, args.filterField)) {
+    //   throw new Error(`Invalid cuisine: ${args.filterField}`);
+    // }
     await ctx.db.insert("table", args);
   },
 });

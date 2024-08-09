@@ -61,11 +61,28 @@ declare const fullApiWithMounts: typeof fullApi & {
       insertRow: FunctionReference<
         "mutation",
         "public",
-        { embedding: Array<number>; filterField: string; textField: string },
+        {
+          embedding: Array<number>;
+          filterField: string;
+          parentId?: string;
+          textField: string;
+        },
         any
       >;
       list: FunctionReference<"query", "public", any, any>;
       populate: FunctionReference<"action", "public", {}, any>;
+      populateFrom: FunctionReference<
+        "action",
+        "public",
+        {
+          data: Array<{
+            filterField: string;
+            parentId?: string;
+            textField: string;
+          }>;
+        },
+        any
+      >;
       vectorSearch: FunctionReference<
         "action",
         "public",
@@ -107,11 +124,28 @@ declare const fullApiWithMounts: typeof fullApi & {
       insertRow: FunctionReference<
         "mutation",
         "public",
-        { embedding: Array<number>; filterField: string; textField: string },
+        {
+          embedding: Array<number>;
+          filterField: string;
+          parentId?: string;
+          textField: string;
+        },
         any
       >;
       list: FunctionReference<"query", "public", any, any>;
       populate: FunctionReference<"action", "public", {}, any>;
+      populateFrom: FunctionReference<
+        "action",
+        "public",
+        {
+          data: Array<{
+            filterField: string;
+            parentId?: string;
+            textField: string;
+          }>;
+        },
+        any
+      >;
       vectorSearch: FunctionReference<
         "action",
         "public",

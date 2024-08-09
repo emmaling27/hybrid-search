@@ -6,6 +6,7 @@ export default defineSchema({
     textField: v.string(),
     filterField: v.string(),
     embedding: v.array(v.float64()),
+    parentId: v.optional(v.string()),
   })
     .searchIndex("full_text_search", {
       searchField: "textField",

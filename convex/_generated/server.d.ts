@@ -182,11 +182,28 @@ export declare const app: {
       insertRow: FunctionReference<
         "mutation",
         "internal",
-        { embedding: Array<number>; filterField: string; textField: string },
+        {
+          embedding: Array<number>;
+          filterField: string;
+          parentId?: string;
+          textField: string;
+        },
         any
       >;
       list: FunctionReference<"query", "internal", any, any>;
       populate: FunctionReference<"action", "internal", {}, any>;
+      populateFrom: FunctionReference<
+        "action",
+        "internal",
+        {
+          data: Array<{
+            filterField: string;
+            parentId?: string;
+            textField: string;
+          }>;
+        },
+        any
+      >;
       vectorSearch: FunctionReference<
         "action",
         "internal",
@@ -228,11 +245,28 @@ export declare const app: {
       insertRow: FunctionReference<
         "mutation",
         "internal",
-        { embedding: Array<number>; filterField: string; textField: string },
+        {
+          embedding: Array<number>;
+          filterField: string;
+          parentId?: string;
+          textField: string;
+        },
         any
       >;
       list: FunctionReference<"query", "internal", any, any>;
       populate: FunctionReference<"action", "internal", {}, any>;
+      populateFrom: FunctionReference<
+        "action",
+        "internal",
+        {
+          data: Array<{
+            filterField: string;
+            parentId?: string;
+            textField: string;
+          }>;
+        },
+        any
+      >;
       vectorSearch: FunctionReference<
         "action",
         "internal",

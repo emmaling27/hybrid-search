@@ -223,6 +223,7 @@ export default function App() {
       )}
       <Insert />
       <Search searchApi={api.foods} />
+      <Search searchApi={api.movies} />
     </main>
   );
 }

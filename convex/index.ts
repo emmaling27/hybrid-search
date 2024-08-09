@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query, action, app } from "./_generated/server";
+import { api } from "./_generated/api";
 import { HybridSearchResult } from "../hybrid_search/vector_search";
 
 export type SearchResult = {
@@ -23,6 +24,25 @@ export const insert = action({
       textField: args.description,
       filterField: args.cuisine,
     });
+  },
+});
+
+export const listMovies = query(async (ctx) => {
+  return await ctx.db.query("movies").collect();
+});
+
+export const insertMovies = action({
+  args: {},
+  handler: async (ctx) => {
+    const movies = await ctx.runQuery(api.index.listMovies);
+    const data = movies.map((movie) => {
+      return {
+        textField: `${movie.title}: ${movie.overview}`,
+        filterField: movie.genres[0],
+        parentId: movie._id,
+      };
+    });
+    await ctx.runAction(app.movies.vector_search.populateFrom, { data });
   },
 });
 

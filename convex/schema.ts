@@ -16,4 +16,12 @@ export default defineSchema({
       searchField: "description",
       filterFields: ["cuisine"],
     }),
+  movies: defineTable({
+    genres: v.array(v.string()),
+    id: v.float64(),
+    overview: v.string(),
+    poster: v.string(),
+    release_date: v.float64(),
+    title: v.string(),
+  }),
 });
