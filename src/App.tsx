@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
 import { useAction, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { SearchResult } from "../convex";
+import { HybridSearchResult } from "../hybrid_search/vector_search";
 import { CUISINES } from "../constants";
 
 function Insert() {
@@ -55,25 +55,25 @@ function Search() {
   const [submittedSearchText, setSubmittedSearchText] = useState("");
   const [searchFilter, setSearchFilter] = useState<string[]>([]);
   const [submittedSearchFilter, setSubmittedSearchFilter] = useState<string[]>(
-    [],
+    []
   );
   const [searchResults, setSearchResults] = useState<
-    SearchResult[] | undefined
+    HybridSearchResult[] | undefined
   >();
   const [hybridSearchResults, setHybridSearchResults] = useState<
-    SearchResult[] | undefined
+    HybridSearchResult[] | undefined
   >();
   const [searchInProgress, setSearchInProgress] = useState(false);
   const [hybridSearchInProgress, setHybridSearchInProgress] = useState(false);
   const [semanticRatio, setSemanticRatio] = useState(0.5);
 
-  const vectorSearch = useAction(api.index.vectorSearch);
-  const fullTextSearch = useQuery(api.index.fullTextSearch, {
+  const vectorSearch = useAction(api.foods.vector_search.vectorSearch);
+  const fullTextSearch = useQuery(api.foods.text_search.fullTextSearch, {
     query: submittedSearchText,
-    cuisine:
+    filterField:
       submittedSearchFilter.length !== 0 ? submittedSearchFilter[0] : undefined,
   });
-  const hybridSearch = useAction(api.index.hybridSearch);
+  const hybridSearch = useAction(api.foods.hybrid.hybridSearch);
 
   const handleSearch = async (event: FormEvent) => {
     event.preventDefault();
@@ -88,11 +88,11 @@ function Search() {
     try {
       const vectorQuery = vectorSearch({
         query: searchText,
-        cuisines: searchFilter.length > 0 ? searchFilter : undefined,
+        filterField: searchFilter.length > 0 ? searchFilter : undefined,
       });
       const hybridQuery = hybridSearch({
         query: searchText,
-        cuisine: searchFilter.length > 0 ? searchFilter[0] : undefined, // TODO error if there is more than one filter
+        filterField: searchFilter.length > 0 ? searchFilter[0] : undefined, // TODO error if there is more than one filter
       });
       const [vectorResults, hybridResults] = await Promise.all([
         vectorQuery,
@@ -145,8 +145,8 @@ function Search() {
             <ul>
               {searchResults.map((result) => (
                 <li key={result._id}>
-                  <span>{(CUISINES as any)[result.cuisine]}</span>
-                  <span>{result.description}</span>
+                  <span>{(CUISINES as any)[result.filterField]}</span>
+                  <span>{result.textField}</span>
                   <span>{result._score?.toFixed(4)}</span>
                 </li>
               ))}
@@ -159,8 +159,8 @@ function Search() {
             <ul>
               {fullTextSearch.map((result) => (
                 <li key={result._id}>
-                  <span>{(CUISINES as any)[result.cuisine]}</span>
-                  <span>{result.description}</span>
+                  <span>{(CUISINES as any)[result.filterField]}</span>
+                  <span>{result.textField}</span>
                 </li>
               ))}
             </ul>
@@ -172,8 +172,8 @@ function Search() {
             <ul>
               {hybridSearchResults.map((result) => (
                 <li key={result._id}>
-                  <span>{(CUISINES as any)[result.cuisine]}</span>
-                  <span>{result.description}</span>
+                  <span>{(CUISINES as any)[result.filterField]}</span>
+                  <span>{result.textField}</span>
                   <span>{result._score?.toFixed(4)}</span>
                 </li>
               ))}

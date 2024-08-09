@@ -27,7 +27,100 @@ import type {
 declare const fullApi: ApiFromModules<{
   index: typeof index;
 }>;
-declare const fullApiWithMounts: typeof fullApi;
+declare const fullApiWithMounts: typeof fullApi & {
+  foods: {
+    hybrid: {
+      hybridSearch: FunctionReference<
+        "action",
+        "public",
+        { filterField?: string; query: string; semanticRatio?: number },
+        any
+      >;
+    };
+    text_search: {
+      fullTextSearch: FunctionReference<
+        "query",
+        "public",
+        { filterField?: string; limit?: number; query: string },
+        any
+      >;
+    };
+    vector_search: {
+      fetchResults: FunctionReference<
+        "query",
+        "public",
+        { results: Array<{ _id: string; _score: number }> },
+        any
+      >;
+      insert: FunctionReference<
+        "action",
+        "public",
+        { filterField: string; textField: string },
+        any
+      >;
+      insertRow: FunctionReference<
+        "mutation",
+        "public",
+        { embedding: Array<number>; filterField: string; textField: string },
+        any
+      >;
+      list: FunctionReference<"query", "public", any, any>;
+      populate: FunctionReference<"action", "public", {}, any>;
+      vectorSearch: FunctionReference<
+        "action",
+        "public",
+        { filterField?: Array<string>; limit?: number; query: string },
+        any
+      >;
+    };
+  };
+  movies: {
+    hybrid: {
+      hybridSearch: FunctionReference<
+        "action",
+        "public",
+        { filterField?: string; query: string; semanticRatio?: number },
+        any
+      >;
+    };
+    text_search: {
+      fullTextSearch: FunctionReference<
+        "query",
+        "public",
+        { filterField?: string; limit?: number; query: string },
+        any
+      >;
+    };
+    vector_search: {
+      fetchResults: FunctionReference<
+        "query",
+        "public",
+        { results: Array<{ _id: string; _score: number }> },
+        any
+      >;
+      insert: FunctionReference<
+        "action",
+        "public",
+        { filterField: string; textField: string },
+        any
+      >;
+      insertRow: FunctionReference<
+        "mutation",
+        "public",
+        { embedding: Array<number>; filterField: string; textField: string },
+        any
+      >;
+      list: FunctionReference<"query", "public", any, any>;
+      populate: FunctionReference<"action", "public", {}, any>;
+      vectorSearch: FunctionReference<
+        "action",
+        "public",
+        { filterField?: Array<string>; limit?: number; query: string },
+        any
+      >;
+    };
+  };
+};
 
 export declare const api: FilterApi<
   typeof fullApiWithMounts,

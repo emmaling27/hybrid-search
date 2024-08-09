@@ -2,13 +2,21 @@ import { defineApp } from "convex/server";
 import hybrid_search from "../hybrid_search/component.config";
 
 const app = defineApp();
-const c = app.install(hybrid_search, {
+const foods = app.install(hybrid_search, {
   args: {
     openAiKey: process.env.OPENAI_KEY,
     vectorSearchRatio: 0.5,
     maxResults: 5,
   },
 });
-const e = c.exports;
-// app.mount({ mountedExports: c.exports });
+app.mount({ foods: foods.exports as any });
+const movies = app.install(hybrid_search, {
+  name: "movies",
+  args: {
+    openAiKey: process.env.OPENAI_KEY,
+    vectorSearchRatio: 0.5,
+    maxResults: 5,
+  },
+});
+app.mount({ movies: movies.exports as any });
 export default app;
