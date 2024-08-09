@@ -45,12 +45,13 @@ export const hybridSearch = action({
     }
     for (let result of textResults) {
       let searchResult;
-      if (results.get(result._id)) {
+      let existingResult = results.get(result._id);
+      if (existingResult) {
         searchResult = {
           _id: result._id,
           textField: result.textField,
           filterField: result.filterField,
-          _score: 2,
+          _score: existingResult._score + 1,
         };
       } else {
         searchResult = {
