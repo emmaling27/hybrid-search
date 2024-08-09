@@ -50,7 +50,7 @@ function presentCuisine(name: string, emoji: string) {
   return `${emoji} ${name[0].toUpperCase()}${name.slice(1)}`;
 }
 
-function Search() {
+function Search({ searchApi }) {
   const [searchText, setSearchText] = useState("");
   const [submittedSearchText, setSubmittedSearchText] = useState("");
   const [searchFilter, setSearchFilter] = useState<string[]>([]);
@@ -66,14 +66,13 @@ function Search() {
   const [searchInProgress, setSearchInProgress] = useState(false);
   const [hybridSearchInProgress, setHybridSearchInProgress] = useState(false);
   const [semanticRatio, setSemanticRatio] = useState(0.5);
-
-  const vectorSearch = useAction(api.foods.vector_search.vectorSearch);
-  const fullTextSearch = useQuery(api.foods.text_search.fullTextSearch, {
+  const vectorSearch = useAction(searchApi.vector_search.vectorSearch);
+  const fullTextSearch = useQuery(searchApi.text_search.fullTextSearch, {
     query: submittedSearchText,
     filterField:
       submittedSearchFilter.length !== 0 ? submittedSearchFilter[0] : undefined,
   });
-  const hybridSearch = useAction(api.foods.hybrid.hybridSearch);
+  const hybridSearch = useAction(searchApi.hybrid.hybridSearch);
 
   const handleSearch = async (event: FormEvent) => {
     event.preventDefault();
@@ -223,7 +222,7 @@ export default function App() {
         </ul>
       )}
       <Insert />
-      <Search />
+      <Search searchApi={api.foods} />
     </main>
   );
 }
